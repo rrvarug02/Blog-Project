@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require('sequelize'); // Import Sequelize 
 
 const sequelize = process.env.DB_URL
   ? new Sequelize(process.env.DB_URL)
@@ -12,4 +12,5 @@ const sequelize = process.env.DB_URL
       }
     );
 
+// Export the Sequelize instance in order to use in other parts of the application
 module.exports = sequelize;
