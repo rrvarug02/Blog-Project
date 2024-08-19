@@ -1,17 +1,20 @@
 <h1>Edit Post</h1>
-<form action="/posts/{{post.id}}" method="POST" enctype="multipart/form-data">
-    <label for="title">Title:</label>
+<form action="/posts/{{post.id}}/edit" method="POST" enctype="multipart/form-data">
+  <div>
+    <label for="title">Title</label>
     <input type="text" id="title" name="title" value="{{post.title}}" required>
-    <label for="content">Content:</label>
+  </div>
+  <div>
+    <label for="content">Content</label>
     <textarea id="content" name="content" required>{{post.content}}</textarea>
-    <label for="image">Image:</label>
+  </div>
+  <div>
+    <label for="image">Image</label>
     <input type="file" id="image" name="image">
-    {{#if post.imageUrl}}
-        <img src="{{post.imageUrl}}" alt="Post image" width="100">
+    {{#if post.image}}
+      <img src="/uploads/{{post.image}}" alt="{{post.title}}" style="max-width: 200px;">
     {{/if}}
-    <button type="submit">Update Post</button>
-</form>
-<form action="/posts/{{post.id}}/delete" method="POST">
-    <button type="submit">Delete Post</button>
+  </div>
+  <button type="submit">Update Post</button>
 </form>
 <a href="/posts">Back to Posts</a>

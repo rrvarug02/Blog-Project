@@ -1,29 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <link rel="stylesheet" href="/css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Application</title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="/posts">Home</a></li>
-                {{#if user}}
-                    <li><a href="/posts/new">New Post</a></li>
-                    <li><a href="/auth/logout">Logout</a></li>
-                    <li><span>Welcome, {{user.username}}</span></li>
-                {{else}}
-                    <li><a href="/auth/login">Login</a></li>
-                    <li><a href="/auth/register">Register</a></li>
-                {{/if}}
-            </ul>
-        </nav>
-    </header>
-    <main>
-        {{{body}}}
-    </main>
+  {{{body}}}
 </body>
 </html>

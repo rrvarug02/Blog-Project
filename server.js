@@ -1,45 +1,48 @@
 const express = require('express');
-const exphbs = require('express-handlebars');
-const session = require('express-session');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const dotenv = require('dotenv');
 const path = require('path');
-const multer = require('multer');
-
-const db = require('./models');
-const authRoutes = require('./routes/authRoutes');
-const postRoutes = require('./routes/postRoutes');
-
-dotenv.config();
+const session = require('express-session');
+const exphbs = require('express-handlebars');
+const { sequelize } = require('./models');
+const PORT = process.env.PORT || 3004;
+const { SESSION_SECRET = 'supersecret' } = process.env;
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-app.engine('handlebars', exphbs.engine());
+const hbs = exphbs.create(); 
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.json());
+// Middleware
 app.use(express.urlencoded({ extended: true }));
-
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    store: new SequelizeStore({
-      db: db.sequelize,
-    }),
-    resave: false,
-    saveUninitialized: false,
-  })
-);
+// Session setup
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+}));
 
-app.use('/auth', authRoutes);
-app.use('/posts', postRoutes);
+// Routes
+app.use('/', require('./routes/postRoutes'));
+app.use('/auth', require('./routes/authRoutes'));
 
-db.sequelize.sync().then(() => {
+// Error handling
+app.use((req, res, next) => {
+  res.status(404).render('404', { layout: false });
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).render('500', { layout: false });
+});
+
+// Start server and sync database
+sequelize.sync().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
   });
+}).catch(err => {
+  console.error('Error syncing database:', err);
 });

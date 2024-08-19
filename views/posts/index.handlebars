@@ -1,16 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blog</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
 <h1>Blog Posts</h1>
-{{#if user}}
-    <a href="/posts/new">Create New Post</a>
-{{/if}}
 <ul>
-    {{#each posts}}
-        <li>
-            <h2>{{this.title}}</h2>
-            <p>{{this.content}}</p>
-            {{#if this.imageUrl}}
-                <img src="{{this.imageUrl}}" alt="Post image" width="200">
-            {{/if}}
-            <a href="/posts/{{this.id}}/edit">Edit</a>
-        </li>
-    {{/each}}
+  {{#each posts}}
+    <li>
+      <h2>{{this.title}}</h2>
+      <p>{{this.content}}</p>
+      {{#if this.image}}
+        <img src="/uploads/{{this.image}}" alt="{{this.title}}" style="max-width: 200px;">
+      {{/if}}
+      <a href="/posts/{{this.id}}/edit">Edit</a>
+    </li>
+  {{/each}}
 </ul>
+</body>
+</html>

@@ -1,77 +1,58 @@
-const { Post, User } = require('../models');
+const { Post } = require('../models');
 
+// Get all posts
 exports.getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.findAll({ include: User });
-    res.render('posts/index', { posts, user: req.session.user });
-  } catch (err) {
-    res.status(500).send('Error fetching posts');
+    const posts = await Post.findAll();
+    res.render('posts/index', { posts });
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 };
 
-exports.getNewPostForm = (req, res) => {
-  res.render('posts/new', { user: req.session.user });
+// Get a specific post by ID
+exports.getPostById = async (req, res) => {
+  try {
+    const post = await Post.findByPk(req.params.id);
+    if (!post) return res.status(404).send('Post not found');
+    res.render('posts/view', { post });
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 };
 
+// Create a new post
 exports.createPost = async (req, res) => {
-  const { title, content } = req.body;
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
   try {
-    await Post.create({
-      title,
-      content,
-      imageUrl,
-      UserId: req.session.user.id
-    });
-    res.redirect('/posts');
-  } catch (err) {
-    res.status(500).send('Error creating post');
+    const { title, content } = req.body;
+    const post = await Post.create({ title, content });
+    res.redirect(`/posts/${post.id}`);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 };
 
-exports.getEditPostForm = async (req, res) => {
-  try {
-    const post = await Post.findByPk(req.params.id);
-    if (post) {
-      res.render('posts/edit', { post, user: req.session.user });
-    } else {
-      res.status(404).send('Post not found');
-    }
-  } catch (err) {
-    res.status(500).send('Error fetching post');
-  }
-};
-
+// Update a post by ID
 exports.updatePost = async (req, res) => {
-  const { title, content } = req.body;
-  const imageUrl = req.file ? `/uploads/${req.file.filename}` : null;
   try {
     const post = await Post.findByPk(req.params.id);
-    if (post) {
-      await post.update({
-        title,
-        content,
-        imageUrl
-      });
-      res.redirect('/posts');
-    } else {
-      res.status(404).send('Post not found');
-    }
-  } catch (err) {
-    res.status(500).send('Error updating post');
+    if (!post) return res.status(404).send('Post not found');
+    const { title, content } = req.body;
+    await post.update({ title, content });
+    res.redirect(`/posts/${post.id}`);
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 };
 
+// Delete a post by ID
 exports.deletePost = async (req, res) => {
   try {
     const post = await Post.findByPk(req.params.id);
-    if (post) {
-      await post.destroy();
-      res.redirect('/posts');
-    } else {
-      res.status(404).send('Post not found');
-    }
-  } catch (err) {
-    res.status(500).send('Error deleting post');
+    if (!post) return res.status(404).send('Post not found');
+    await post.destroy();
+    res.redirect('/posts');
+  } catch (error) {
+    res.status(500).send(error.message);
   }
 };
