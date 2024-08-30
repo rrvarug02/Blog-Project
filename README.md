@@ -19,3 +19,5 @@ This Blog Project is a full-stack web app for creating and managing blog posts. 
 
 
    git clone https://github.com/rrvarug02/Blog-Project.git
+
+Recieved help during class 
